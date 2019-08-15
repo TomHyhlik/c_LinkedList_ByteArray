@@ -1,4 +1,6 @@
 #include <stdint.h>
+#include <stdbool.h>
+
 
 #ifndef LINKEDLIST_BYTEARRAY_H_
 #define LINKEDLIST_BYTEARRAY_H_
