@@ -1,6 +1,6 @@
 #include <stdint.h>
-#include <stdbool.h>
 
+#include <stddef.h>
 
 #ifndef LINKEDLIST_BYTEARRAY_H_
 #define LINKEDLIST_BYTEARRAY_H_
@@ -27,9 +27,7 @@ LinkedList_ByteArray* ba_removeAll(LinkedList_ByteArray* ba);
 int ba_find(LinkedList_ByteArray* ba, uint8_t* data, uint8_t len);
 LinkedList_ByteArray* ba_appendIfNotIncluded(LinkedList_ByteArray* ba, uint8_t* newData, uint8_t size);
 
-void EEPROM_rmDevicesWhichAreNotIncludedInThisList(LinkedList_ByteArray* list);
-
-
+int ba_findAndCopy(LinkedList_ByteArray* ba, uint8_t *destination, uint8_t* searchedData, size_t size);
 bool ba_isEmpty();
 
 void ba_print(LinkedList_ByteArray* ba);

@@ -89,6 +89,7 @@ LinkedList_ByteArray* ba_CreateNewArray(uint8_t* newData, uint8_t newData_len, L
 		return NULL;
 	}
 	ba_new->data = malloc(newData_len);
+	memset(ba_new->data, 0, newData_len);
 
 	memcpy(ba_new->data, newData, newData_len);
 	ba_new->length = newData_len;
@@ -201,31 +202,64 @@ LinkedList_ByteArray* ba_removeAll(LinkedList_ByteArray* ba)
 /* @brief find bytearray in the list
  * @param ba is the byte array to be searched in
  * @param data is the searched array
- * @param len is the length of searched array
+ * @param size is the length of array to be compared within the list
  * @return -1 if not found, otherwise return the position in the array
  */
-int ba_find(LinkedList_ByteArray* ba, uint8_t* data, uint8_t len)
+int ba_find(LinkedList_ByteArray* ba, uint8_t* data, uint8_t size)
 {
 	if(ba != NULL)
 	{
 		LinkedList_ByteArray* cursor = ba;
 		int position = 0;
-
 		/* for each element in the list */
-		while(cursor->next != NULL)
+		while(cursor != NULL)
 		{
-			/* first check if the length equals */
-			if(cursor->length == len)
+			if(cursor->length >= size)
 			{
-				/* now check if the data are the same */
-				for(int i = 0; i < len; i++)
+				bool itEquals = true;
+				for (int i = 0; i < size; i++)
 				{
-					if(data[i] != cursor->data[i]){
+					if (data[i] != cursor->data[i]) {
+						itEquals = false;
 						break;
-					} else if (i == len - 1){
-						/* we found it! */
-						return position;
 					}
+				}
+				if (itEquals)
+					return position;
+			}
+			/* go to next */
+			position++;
+			cursor = cursor->next;
+		}
+	}
+	return -1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int ba_findAndCopy(LinkedList_ByteArray* ba, uint8_t *destination, uint8_t* searchedData, size_t size)
+{
+	if(ba != NULL)
+	{
+		LinkedList_ByteArray* cursor = ba;
+		int position = 0;
+		/* for each element in the list */
+		while(cursor != NULL)
+		{
+			if(cursor->length >= size)
+			{
+				bool itEquals = true;
+				for (int i = 0; i < size; i++)
+				{
+					if (searchedData[i] != cursor->data[i]) {
+						itEquals = false;
+						break;
+					}
+				}
+				// pHex_tit("found: ", cursor->data, cursor->length);
+				// pHex_tit("searched data: ", searchedData, size);
+				if (itEquals) {
+					memcpy(destination, cursor->data, cursor->length);
+					return cursor->length;
 				}
 			}
 			/* go to next */
